@@ -2,15 +2,19 @@ import os
 import asyncio
 
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher
+from aiogram import Bot, Dispatcher, F
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message
+
+from database.create_db import init_db
+from database.create_db import populate_default_tables
 
 from .start_command import show_start
 from .info_command import show_info
 
 dp = Dispatcher(storage=MemoryStorage())
+
 
 
 #                                     Общие команды для всех пользователей
@@ -46,6 +50,11 @@ def get_token() -> str:
 
 
 async def main_tg_bot(token: str):
+    # Запуск БД
+    await init_db()
+    # Заполняем таблицы по умолчанию
+    await populate_default_tables()
+
     # Запускаем polling и гарантированно закрываем сессию бота.
     bot = Bot(token=token)
     try:

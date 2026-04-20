@@ -373,16 +373,31 @@ select {
   height: 52px;
   display: grid;
   place-items: center;
+  padding: 0;
   border-radius: 999px;
-  background: linear-gradient(180deg, #4b372d 0%, #241915 100%);
-  border-color: rgba(233, 216, 201, 0.16);
-  color: #f7eadf;
+  background: rgba(255, 239, 220, 0.06);
+  border: 2px solid rgba(255, 228, 196, 0.78);
+  color: transparent;
   font-weight: 700;
-  box-shadow: 0 10px 18px rgba(0, 0, 0, 0.24);
+  text-align: center;
+  line-height: 1;
+  box-shadow:
+    0 0 0 1px rgba(74, 49, 36, 0.55) inset,
+    0 0 0 1px rgba(255, 228, 196, 0.25);
+  animation: table-pulse 1.8s ease-in-out infinite;
+}
+
+.table-chip:hover {
+  border-color: rgba(255, 239, 220, 0.95);
+  background: rgba(255, 239, 220, 0.16);
+  box-shadow: 0 0 0 3px rgba(162, 115, 73, 0.28);
 }
 
 .table-chip.is-selected {
-  background: linear-gradient(180deg, #a27349 0%, #6f4325 100%);
+  background: rgba(210, 179, 154, 0.12);
+  border-color: rgba(255, 239, 220, 0.9);
+  box-shadow: 0 0 0 2px rgba(162, 115, 73, 0.45);
+  animation: none;
   transform: scale(1.06);
 }
 
@@ -484,6 +499,24 @@ select {
   }
 }
 
+@keyframes table-pulse {
+  0% {
+    box-shadow:
+      0 0 0 1px rgba(74, 49, 36, 0.55) inset,
+      0 0 0 1px rgba(255, 228, 196, 0.2);
+  }
+  50% {
+    box-shadow:
+      0 0 0 1px rgba(74, 49, 36, 0.55) inset,
+      0 0 0 4px rgba(255, 228, 196, 0.16);
+  }
+  100% {
+    box-shadow:
+      0 0 0 1px rgba(74, 49, 36, 0.55) inset,
+      0 0 0 1px rgba(255, 228, 196, 0.2);
+  }
+}
+
 @media (max-width: 640px) {
   .app-shell {
     padding: 16px 12px 28px;
@@ -514,9 +547,36 @@ select {
     grid-template-columns: 1fr;
   }
 
+  .hall-card {
+    padding: 8px;
+  }
+
+  .hall-plan {
+    border-radius: 16px;
+    width: calc(100% + 20px);
+    margin-left: -10px;
+    margin-right: -10px;
+  }
+
   .table-chip {
-    width: 44px;
-    height: 44px;
-    font-size: 10%;
+    width: 28px;
+    height: 28px;
+    font-size: 9px;
+    line-height: 1;
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.18);
+  }
+}
+
+@media (max-width: 420px) {
+  .hall-plan {
+    width: calc(100% + 24px);
+    margin-left: -12px;
+    margin-right: -12px;
+  }
+
+  .table-chip {
+    width: 24px;
+    height: 24px;
+    font-size: 8px;
   }
 }

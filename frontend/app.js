@@ -87,10 +87,8 @@ const elements = {
   phoneHint: document.getElementById("phone-hint"),
   contactNext: document.getElementById("contact-next"),
   summary: document.getElementById("summary"),
-  resultSummary: document.getElementById("result-summary"),
   cancelBooking: document.getElementById("cancel-booking"),
   confirmBooking: document.getElementById("confirm-booking"),
-  restartBooking: document.getElementById("restart-booking"),
   prevButtons: Array.from(document.querySelectorAll("[data-prev]"))
 };
 
@@ -191,7 +189,6 @@ function bindEvents() {
   elements.contactNext.addEventListener("click", handleContactNext);
   elements.confirmBooking.addEventListener("click", handleConfirm);
   elements.cancelBooking.addEventListener("click", resetBooking);
-  elements.restartBooking.addEventListener("click", resetBooking);
   elements.calendarPrev.addEventListener("click", () => switchMonth(-1));
   elements.calendarNext.addEventListener("click", () => switchMonth(1));
 
@@ -343,7 +340,8 @@ function renderTables() {
     const button = document.createElement("button");
     button.type = "button";
     button.className = "table-chip";
-    button.textContent = table.label;
+    button.textContent = "";
+    button.setAttribute("aria-label", `Выбрать столик ${table.label}`);
     button.style.left = `${table.left}%`;
     button.style.top = `${table.top}%`;
     button.addEventListener("click", () => {
@@ -465,7 +463,7 @@ function toIsoDate(date) {
 }
 
 function goToStep(step) {
-  currentStep = Math.max(1, Math.min(8, step));
+  currentStep = Math.max(1, Math.min(7, step));
   elements.steps.forEach((section) => {
     section.classList.toggle("is-active", Number(section.dataset.step) === currentStep);
   });
@@ -473,7 +471,7 @@ function goToStep(step) {
 }
 
 function updateProgress() {
-  const totalInteractiveSteps = 8;
+  const totalInteractiveSteps = 7;
   const percent = (currentStep / totalInteractiveSteps) * 100;
   elements.progressBar.style.width = `${percent}%`;
 }
@@ -538,15 +536,46 @@ function handleContactNext() {
   goToStep(7);
 }
 
-function handleConfirm() {
-  fillSummary(elements.resultSummary);
-
-  if (tg) {
-    tg.sendData(JSON.stringify(booking));
-    tg.MainButton.hide();
+async function handleConfirm() {
+  if (!tg) {
+    alert("Бронь отправлена. В Telegram вы получите сообщение с деталями.");
+    resetBooking();
+    return;
   }
 
-  goToStep(8);
+  elements.confirmBooking.disabled = true;
+  elements.confirmBooking.textContent = "Отправляем...";
+
+  const user = tg.initDataUnsafe?.user ?? {};
+  const payload = {
+    telegram_id: user.id ?? 0,
+    tg_name: user.username ?? user.first_name ?? "",
+    name: booking.name,
+    address: booking.address,
+    date: booking.date,
+    hour: booking.hour,
+    minute: booking.minute,
+    guests: booking.guests,
+    table: booking.table,
+    phone: booking.phone,
+  };
+
+  try {
+    const apiUrl = window.BOOKING_API_URL || "";
+    const res = await fetch(`${apiUrl}/api/booking`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+    });
+    if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  } catch (err) {
+    elements.confirmBooking.disabled = false;
+    elements.confirmBooking.textContent = "Всё верно";
+    alert("Ошибка отправки брони. Попробуйте ещё раз.");
+    return;
+  }
+
+  setTimeout(() => tg.close(), 500);
 }
 
 function fillSummary(container) {
