@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Бронирование ресторана</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="app-shell">
+    <header class="hero">
+      <p class="eyebrow">Mini App</p>
+      <h1>Бронирование столика</h1>
+      <p class="hero-text">Выберите адрес, дату, время, столик и подтвердите бронь.</p>
+    </header>
+
+    <main class="card">
+      <div class="progress" aria-label="Прогресс бронирования">
+        <div class="progress-bar" id="progress-bar"></div>
+      </div>
+
+      <section class="step is-active" data-step="1">
+        <h2>Какой адрес?</h2>
+        <p class="step-text">Пока доступны пять адресов для выбора.</p>
+        <div class="address-grid" id="address-grid"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="address-next" disabled>Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="2">
+        <h2>Какая дата?</h2>
+        <p class="step-text">Выберите дату бронирования в календаре.</p>
+        <div class="calendar-widget" aria-label="Календарь бронирования">
+          <div class="calendar-toolbar">
+            <button class="calendar-nav" id="calendar-prev" type="button" aria-label="Предыдущий месяц">&lt;</button>
+            <div class="calendar-month" id="calendar-month-label"></div>
+            <button class="calendar-nav" id="calendar-next" type="button" aria-label="Следующий месяц">&gt;</button>
+          </div>
+          <div class="calendar-weekdays">
+            <span>Пн</span>
+            <span>Вт</span>
+            <span>Ср</span>
+            <span>Чт</span>
+            <span>Пт</span>
+            <span>Сб</span>
+            <span>Вс</span>
+          </div>
+          <div class="calendar-grid" id="calendar-grid"></div>
+        </div>
+        <p class="calendar-selected" id="calendar-selected">Дата не выбрана</p>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" data-prev>Назад</button>
+          <button class="btn btn-primary" id="date-next">Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="3">
+        <h2>Какое время?</h2>
+        <p class="step-text">Сначала выберите час, затем минуты. Рабочее время с 11:00 до 02:30.</p>
+        <div class="time-grid">
+          <label class="field">
+            <span>Час</span>
+            <select id="reservation-hour"></select>
+          </label>
+          <label class="field">
+            <span>Минуты</span>
+            <select id="reservation-minute"></select>
+          </label>
+        </div>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" data-prev>Назад</button>
+          <button class="btn btn-primary" id="time-next">Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="4">
+        <h2>Сколько человек?</h2>
+        <p class="step-text">Укажите количество гостей.</p>
+        <div class="guest-picker">
+          <button class="counter" id="guest-decrease" type="button">-</button>
+          <div class="guest-count-display" id="guest-count">2</div>
+          <button class="counter" id="guest-increase" type="button">+</button>
+        </div>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" data-prev>Назад</button>
+          <button class="btn btn-primary" id="guest-next">Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="5">
+        <h2>Выбор столика</h2>
+        <p class="step-text">Свободные столики подсвечены. Нажмите на столик на схеме.</p>
+        <div class="hall-card">
+          <div class="hall-plan" id="hall-plan">
+            <img src="hall_plan/hall_plan.png" alt="Схема ресторана">
+            <div class="table-layer" id="table-layer"></div>
+          </div>
+          <p class="selected-table" id="selected-table-text">Столик пока не выбран.</p>
+        </div>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" data-prev>Назад</button>
+          <button class="btn btn-primary" id="table-next" disabled>Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="6">
+        <h2>Контактные данные</h2>
+        <p class="step-text">Введите имя и номер телефона для брони.</p>
+        <label class="field">
+          <span>Имя</span>
+          <input type="text" id="guest-name" placeholder="Например, Алексей">
+        </label>
+        <label class="field">
+          <span>Номер телефона</span>
+          <div class="phone-row">
+            <select id="phone-country" aria-label="Код страны">
+              <option value="+7" data-digits="10" selected>Россия +7</option>
+              <option value="+380" data-digits="9">Украина +380</option>
+              <option value="+375" data-digits="9">Беларусь +375</option>
+              <option value="+44" data-digits="10">Великобритания +44</option>
+              <option value="+1" data-digits="10">США/Канада +1</option>
+            </select>
+            <input
+              type="tel"
+              id="guest-phone"
+              inputmode="numeric"
+              autocomplete="tel-national"
+              placeholder="Введите только цифры"
+            >
+          </div>
+          <span class="field-hint" id="phone-hint">Нужно 10 цифр без пробелов и символов.</span>
+        </label>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" data-prev>Назад</button>
+          <button class="btn btn-primary" id="contact-next">Далее</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="7">
+        <h2>Проверьте информацию</h2>
+        <p class="step-text">Если всё верно, подтвердите бронирование.</p>
+        <div class="summary" id="summary"></div>
+        <div class="actions actions-split">
+          <button class="btn btn-ghost" id="cancel-booking">Не бронировать</button>
+          <button class="btn btn-primary" id="confirm-booking">Всё верно</button>
+        </div>
+      </section>
+
+      <section class="step" data-step="8">
+        <h2>Бронь собрана</h2>
+        <p class="step-text">Данные готовы. Их можно отправить в Telegram Mini App.</p>
+        <div class="summary" id="result-summary"></div>
+        <div class="actions">
+          <button class="btn btn-primary" id="restart-booking">Новая бронь</button>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="app.js"></script>
+</body>
+</html>
