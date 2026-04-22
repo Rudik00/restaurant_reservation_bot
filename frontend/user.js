@@ -787,7 +787,9 @@ async function handleConfirm() {
   const user = tg.initDataUnsafe?.user ?? {};
   const payload = {
     telegram_id: user.id ?? 0,
-    tg_name: user.username ?? user.first_name ?? "",
+    tg_name: user.username ?? "",
+    tg_first_name: user.first_name ?? "",
+    tg_last_name: user.last_name ?? "",
     name: booking.name,
     date: booking.date,
     hour: booking.hour,

@@ -36,6 +36,8 @@ app.add_middleware(
 class BookingRequest(BaseModel):
     telegram_id: int  # Telegram user ID (64-bit)
     tg_name: str
+    tg_first_name: str = ""
+    tg_last_name: str = ""
     name: str
     date: str
     hour: str
@@ -62,10 +64,19 @@ async def notify_masters_about_booking(data: BookingRequest, time_str: str) -> N
     if not master_ids:
         return
 
+    has_username = bool(data.tg_name and data.tg_name.strip())
     tg_link = (
         f'<a href="https://t.me/{data.tg_name.lstrip("@")}">связь с клиентом</a>'
-        if data.tg_name
+        if has_username
         else f'<a href="tg://user?id={data.telegram_id}">связь с клиентом</a>'
+    )
+    tg_full_name = " ".join(
+        part for part in [data.tg_first_name.strip(), data.tg_last_name.strip()] if part
+    )
+    contact_label = (
+        f"@{data.tg_name.lstrip('@')}"
+        if has_username
+        else (tg_full_name or f"id{data.telegram_id}")
     )
     text = (
         f"🆕 <b>Новая бронь</b>\n\n"
@@ -73,8 +84,7 @@ async def notify_masters_about_booking(data: BookingRequest, time_str: str) -> N
         f"⏰ <b>Время:</b> {time_str}\n"
         f"👥 <b>Гостей:</b> {data.guests}\n"
         f"🪑 <b>Столик:</b> № {data.table}\n"
-        f"👤 <b>Имя:</b> {data.name}\n"
-        f"📞 <b>Телефон:</b> {data.phone}\n"
+        f"👤 <b>Telegram:</b> {contact_label}\n"
         f"🔗 {tg_link}"
     )
 
@@ -97,6 +107,17 @@ def _booking_start_datetime(date_str: str, time_str: str) -> datetime:
         start_dt = start_dt + timedelta(days=1)
 
     return start_dt
+
+
+def _booking_sort_key_safe(booking: Users) -> datetime:
+    """Возвращает дату для сортировки, не падая на битых данных."""
+    try:
+        return _booking_start_datetime(
+            booking.data_reservation,
+            booking.time_reservation,
+        )
+    except (ValueError, TypeError):
+        return datetime.max
 
 
 @app.get("/api/availability")
@@ -266,12 +287,7 @@ async def get_my_bookings(telegram_id: int):
                 )
                 await session.commit()
 
-            active_bookings.sort(
-                key=lambda booking: _booking_start_datetime(
-                    booking.data_reservation,
-                    booking.time_reservation,
-                )
-            )
+            active_bookings.sort(key=_booking_sort_key_safe)
             bookings = active_bookings
     except Exception as e:
         raise HTTPException(status_code=500, detail=f"DB error: {e}")
