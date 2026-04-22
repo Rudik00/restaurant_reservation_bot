@@ -13,6 +13,10 @@ async def show_info(message: Message):
     load_dotenv()
     mini_app_url = os.getenv("MINI_APP_URL")
 
+    if not mini_app_url:
+        await message.answer("MINI_APP_URL не настроен.")
+        return
+
     keyboard = InlineKeyboardMarkup(
         inline_keyboard=[
             [

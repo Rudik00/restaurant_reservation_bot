@@ -11,24 +11,41 @@
     <header class="hero">
       <p class="eyebrow">Mini App</p>
       <h1>Бронирование столика</h1>
-      <p class="hero-text">Выберите адрес, дату, время, столик и подтвердите бронь.</p>
+      <p class="hero-text">Выберите дату, время, столик и подтвердите бронь.</p>
     </header>
 
     <main class="card">
-      <div class="progress" aria-label="Прогресс бронирования">
+      <section class="screen screen-home is-active" id="home-screen">
+        <h2>Выберите действие</h2>
+        <p class="step-text">Просмотрите свои брони или создайте новую.</p>
+        <div class="home-actions">
+          <button class="btn btn-secondary" id="open-my-bookings">Ваши брони</button>
+          <button class="btn btn-primary" id="open-new-booking">Новая бронь</button>
+        </div>
+      </section>
+
+      <section class="screen" id="my-bookings-screen">
+        <h2>Ваши брони</h2>
+        <p class="step-text">Здесь отображаются данные по вашим бронированиям.</p>
+        <div class="booking-cards" id="my-bookings-list"></div>
+        <div class="actions actions-split">
+          <button class="btn btn-secondary" id="bookings-back">Назад</button>
+          <button class="btn btn-primary" id="bookings-new">Новая бронь</button>
+        </div>
+      </section>
+
+      <section class="screen" id="master-bookings-screen">
+        <h2>Все бронирования</h2>
+        <p class="step-text">Список бронирований пользователей, сгруппированный по дате и времени.</p>
+        <div class="master-groups" id="master-groups"></div>
+      </section>
+
+      <div class="booking-flow" id="booking-flow">
+      <div class="progress" id="booking-progress" aria-label="Прогресс бронирования">
         <div class="progress-bar" id="progress-bar"></div>
       </div>
 
       <section class="step is-active" data-step="1">
-        <h2>Какой адрес?</h2>
-        <p class="step-text">Пока доступны пять адресов для выбора.</p>
-        <div class="address-grid" id="address-grid"></div>
-        <div class="actions">
-          <button class="btn btn-primary" id="address-next" disabled>Далее</button>
-        </div>
-      </section>
-
-      <section class="step" data-step="2">
         <h2>Какая дата?</h2>
         <p class="step-text">Выберите дату бронирования в календаре.</p>
         <div class="calendar-widget" aria-label="Календарь бронирования">
@@ -49,13 +66,12 @@
           <div class="calendar-grid" id="calendar-grid"></div>
         </div>
         <p class="calendar-selected" id="calendar-selected">Дата не выбрана</p>
-        <div class="actions actions-split">
-          <button class="btn btn-secondary" data-prev>Назад</button>
+        <div class="actions">
           <button class="btn btn-primary" id="date-next">Далее</button>
         </div>
       </section>
 
-      <section class="step" data-step="3">
+      <section class="step" data-step="2">
         <h2>Какое время?</h2>
         <p class="step-text">Сначала выберите час, затем минуты. Рабочее время с 11:00 до 02:30.</p>
         <div class="time-grid">
@@ -74,7 +90,7 @@
         </div>
       </section>
 
-      <section class="step" data-step="4">
+      <section class="step" data-step="3">
         <h2>Сколько человек?</h2>
         <p class="step-text">Укажите количество гостей.</p>
         <div class="guest-picker">
@@ -88,7 +104,7 @@
         </div>
       </section>
 
-      <section class="step" data-step="5">
+      <section class="step" data-step="4">
         <h2>Выбор столика</h2>
         <p class="step-text">Свободные столики подсвечены. Нажмите на столик на схеме.</p>
         <div class="hall-card">
@@ -104,7 +120,7 @@
         </div>
       </section>
 
-      <section class="step" data-step="6">
+      <section class="step" data-step="5">
         <h2>Контактные данные</h2>
         <p class="step-text">Введите имя и номер телефона для брони.</p>
         <label class="field">
@@ -137,7 +153,7 @@
         </div>
       </section>
 
-      <section class="step" data-step="7">
+      <section class="step" data-step="6">
         <h2>Проверьте информацию</h2>
         <p class="step-text">Если всё верно, подтвердите бронирование.</p>
         <div class="summary" id="summary"></div>
@@ -146,6 +162,7 @@
           <button class="btn btn-primary" id="confirm-booking">Всё верно</button>
         </div>
       </section>
+      </div>
 
     </main>
   </div>

@@ -2,7 +2,7 @@ import os
 import asyncio
 
 from dotenv import load_dotenv
-from aiogram import Bot, Dispatcher, F
+from aiogram import Bot, Dispatcher
 from aiogram.filters import Command
 from aiogram.fsm.storage.memory import MemoryStorage
 from aiogram.types import Message
@@ -12,9 +12,9 @@ from database.create_db import populate_default_tables
 
 from .start_command import show_start
 from .info_command import show_info
+from .master_command import add_master, show_master_reservations
 
 dp = Dispatcher(storage=MemoryStorage())
-
 
 
 #                                     Общие команды для всех пользователей
@@ -35,10 +35,12 @@ async def info_command(message: Message):
 # Команда для получения информации о боте
 @dp.message(Command("reserv_users"))
 async def reserv_users_command(message: Message):
-    await message.answer(
-        "Пока что эта команда в разработке, скоро будет готова)"
-    )
-    # await show_info(message)
+    await show_master_reservations(message)
+
+
+@dp.message(Command("add_master"))
+async def add_master_command(message: Message):
+    await add_master(message)
 
 
 def get_token() -> str:
